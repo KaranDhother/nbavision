@@ -1,0 +1,6 @@
+# Core dependencies for the nba-vision v1 pipeline.
+# Loosely pinned to major versions known to work together.
+ultralytics>=8.2        # YOLOv8 detection
+supervision>=0.20       # ByteTrack tracking + annotation utilities
+opencv-python>=4.9      # Video I/O, k-means color clustering
+numpy>=1.26             # Array ops throughout

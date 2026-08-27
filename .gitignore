@@ -1,0 +1,28 @@
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Model weights (large binaries — distributed separately, see README)
+models/*.pt
+*.pt
+
+# Sample / output videos (too large for git)
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Tooling & OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Keep the models directory itself tracked
+!models/.gitkeep
