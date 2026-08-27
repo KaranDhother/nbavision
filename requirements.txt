@@ -1,6 +1,8 @@
 # Core dependencies for the nba-vision v1 pipeline.
 # Loosely pinned to major versions known to work together.
 ultralytics>=8.2        # YOLOv8 detection
-supervision>=0.20       # ByteTrack tracking + annotation utilities
+# <0.31: sv.ByteTrack is deprecated and removed in 0.31 (migrate to the
+# `trackers` package when that happens)
+supervision>=0.20,<0.31 # ByteTrack tracking + annotation utilities
 opencv-python>=4.9      # Video I/O, k-means color clustering
 numpy>=1.26             # Array ops throughout
