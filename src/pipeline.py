@@ -18,6 +18,7 @@ TEAM_COLORS = {
     UNKNOWN: sv.Color(160, 160, 160),
 }
 BALL_COLOR = sv.Color(255, 140, 0)
+REF_COLOR = sv.Color(90, 90, 90)
 
 
 class _Annotators:
@@ -30,8 +31,14 @@ class _Annotators:
             for team, color in TEAM_COLORS.items()
         }
         self.ball_box = sv.BoxAnnotator(color=BALL_COLOR)
+        self.ref_box = sv.BoxAnnotator(color=REF_COLOR)
+        self.ref_label = sv.LabelAnnotator(color=REF_COLOR, text_color=sv.Color.WHITE)
 
-    def draw(self, frame, persons, team_labels, balls):
+    def draw(self, frame, persons, team_labels, refs, balls):
+        if len(refs):
+            texts = [f"ref #{tid}" for tid in refs.tracker_id]
+            frame = self.ref_box.annotate(frame, refs)
+            frame = self.ref_label.annotate(frame, refs, labels=texts)
         for team in TEAM_COLORS:
             mask = np.array([t == team for t in team_labels], dtype=bool)
             group = persons[mask] if len(persons) else persons
@@ -73,8 +80,10 @@ def run(input_path: str, output_path: str, weights_path: str = "models/best.pt",
         detections = detector.detect(frame)
         persons, balls = detector.split(detections)
         persons = tracker.update(persons)
-        team_labels = classifier.classify(frame, persons)
-        writer.write(annotators.draw(frame, persons, team_labels, balls))
+        ref_mask = np.isin(persons.class_id, list(detector.ref_class_ids))
+        refs, players = persons[ref_mask], persons[~ref_mask]
+        team_labels = classifier.classify(frame, players)
+        writer.write(annotators.draw(frame, players, team_labels, refs, balls))
         frame_idx += 1
         if frame_idx % 30 == 0:
             print(f"[pipeline] {frame_idx}/{total or '?'} frames")

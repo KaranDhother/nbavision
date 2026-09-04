@@ -34,6 +34,9 @@ PERSON_LIKE_NAMES = {"person", "player", "referee", "ref", "coach"}
 # Class names that count as the ball.
 BALL_NAMES = {"ball", "basketball", "sports ball"}
 
+# Subset of person-like classes that are referees (tracked, not team-classified).
+REF_NAMES = {"referee", "ref"}
+
 
 class Detector:
     """Runs YOLOv8 inference on single frames.
@@ -66,6 +69,10 @@ class Detector:
         self.ball_class_ids = {
             cid for cid, name in self.class_names.items()
             if name.lower() in BALL_NAMES
+        }
+        self.ref_class_ids = {
+            cid for cid, name in self.class_names.items()
+            if name.lower() in REF_NAMES
         }
         # Everything we care about; other COCO classes (chairs, etc.) get dropped.
         self._keep_ids = self.person_class_ids | self.ball_class_ids
