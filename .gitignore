@@ -18,6 +18,10 @@ models/*.pt
 *.mov
 *.mkv
 
+# Training artifacts
+datasets/
+runs/
+
 # Tooling & OS noise
 .DS_Store
 Thumbs.db

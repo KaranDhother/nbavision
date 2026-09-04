@@ -1,6 +1,8 @@
 """End-to-end pipeline: detect -> track -> team-classify -> annotated video."""
 
 import argparse
+import os
+import subprocess
 
 import cv2
 import numpy as np
@@ -79,7 +81,27 @@ def run(input_path: str, output_path: str, weights_path: str = "models/best.pt",
 
     cap.release()
     writer.release()
+    _reencode_h264(output_path)
     print(f"[pipeline] done: {frame_idx} frames -> {output_path}")
+
+
+def _reencode_h264(path: str):
+    """OpenCV writes mp4v, which most players can't decode; convert to H.264."""
+    try:
+        import imageio_ffmpeg
+        ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        print("[pipeline] imageio-ffmpeg not available — output kept as mp4v")
+        return
+    tmp = path + ".h264.mp4"
+    result = subprocess.run(
+        [ffmpeg, "-y", "-loglevel", "error", "-i", path,
+         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20", tmp],
+    )
+    if result.returncode == 0:
+        os.replace(tmp, path)
+    else:
+        print("[pipeline] H.264 re-encode failed — output kept as mp4v")
 
 
 def main():

@@ -29,7 +29,7 @@ FALLBACK_WEIGHTS = "yolov8n.pt"
 
 # Class names (lowercased) that count as a trackable person. "person" covers
 # the COCO fallback; the rest cover typical basketball fine-tunes.
-PERSON_LIKE_NAMES = {"person", "player", "referee", "goalkeeper"}
+PERSON_LIKE_NAMES = {"person", "player", "referee", "ref", "coach"}
 
 # Class names that count as the ball.
 BALL_NAMES = {"ball", "basketball", "sports ball"}

@@ -6,3 +6,5 @@ ultralytics>=8.2        # YOLOv8 detection
 supervision>=0.20,<0.31 # ByteTrack tracking + annotation utilities
 opencv-python>=4.9      # Video I/O, k-means color clustering
 numpy>=1.26             # Array ops throughout
+imageio-ffmpeg>=0.5     # Bundled ffmpeg to re-encode output as H.264
+roboflow>=1.1           # Dataset download for training (src/train.py)
