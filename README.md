@@ -65,6 +65,47 @@ python -m src.pipeline --input clip.mp4 --output out.mp4 --weights models/best.p
 Progress prints every 30 frames; the output is a normal mp4 you can scrub
 through to inspect IDs and team assignments.
 
+## Training the custom model
+
+`src/train.py` fine-tunes YOLOv8 on the
+[basketball-players](https://universe.roboflow.com/roboflow-universe-projects/basketball-players-fy4c2)
+dataset from Roboflow Universe (classes include `Player`, `Ball`, `Ref`) and
+exports the weights to `models/best.pt`, where the pipeline picks them up
+automatically. You need a free Roboflow API key
+(app.roboflow.com → Settings → API Keys).
+
+Training needs an NVIDIA GPU to be practical — on Google Colab's free T4 it
+takes ~30–60 min:
+
+1. Open a new notebook at [colab.research.google.com](https://colab.research.google.com)
+   and set **Runtime → Change runtime type → T4 GPU**
+2. Run:
+
+   ```
+   !git clone <this repo> nba_vision
+   %cd nba_vision
+   !pip install -q -r requirements.txt
+   import os; os.environ["ROBOFLOW_API_KEY"] = "your-key"
+   !python -m src.train
+   ```
+
+3. Download the result to your machine:
+
+   ```python
+   from google.colab import files
+   files.download("models/best.pt")
+   ```
+
+4. Place it at `models/best.pt` locally and rerun the pipeline — player,
+   ball, and referee classes now come from the fine-tuned model.
+
+Useful flags: `--epochs`, `--imgsz` (default 960; higher helps ball
+detection), `--model yolov8s.pt` for a bigger base model, and
+`--epochs 1 --imgsz 320 --fraction 0.05` as a quick CPU wiring test.
+
+The same command runs locally, but CPU training is very slow and AMD GPUs on
+Windows aren't supported for PyTorch training yet.
+
 ## Roadmap
 
 - [ ] **Fine-tuned detection** — train YOLOv8 on a Roboflow basketball dataset
