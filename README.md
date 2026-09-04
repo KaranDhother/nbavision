@@ -45,9 +45,14 @@ Colab T4, takes under an hour:
 !git clone https://github.com/KaranDhother/nbavision.git
 %cd nbavision
 !pip install -q -r requirements.txt
-import os; os.environ["ROBOFLOW_API_KEY"] = "your-key"
+import os
+from google.colab import userdata
+os.environ["ROBOFLOW_API_KEY"] = userdata.get("ROBOFLOW_API_KEY")
 !python -m src.train
 ```
+
+(the key comes from Colab's Secrets — the key icon in the left sidebar — so
+it never ends up saved in the notebook)
 
 then download `models/best.pt` from Colab into `models/` locally and rerun
 the pipeline.
